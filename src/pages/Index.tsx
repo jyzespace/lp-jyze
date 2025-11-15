@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 // CHAT JYZELI DESABILITADO - import type { KeyboardEvent } from "react";
 // CHAT JYZELI DESABILITADO - import WhatsAppChat from "../components/WhatsAppChat";
+import { motion, AnimatePresence } from "framer-motion";
 import WhatsAppButton from "../components/WhatsAppButton";
 import FlowStep from "../components/FlowStep";
 import FlowDetailPanel from "../components/FlowDetailPanel";
@@ -38,7 +39,8 @@ import {
   Brain,
   Network,
   TrendingUp,
-  Award
+  Award,
+  ChevronDown
 } from "lucide-react";
 
 const Index = () => {
@@ -89,6 +91,9 @@ const Index = () => {
     state: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // FAQ state
+  const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   
   // Notification state
   const [notification, setNotification] = useState<{
@@ -968,23 +973,34 @@ const Index = () => {
 
   const faqs = [
     {
-      question: "Como funciona a integração com o WhatsApp?",
+      question: "A IA realmente atende meus clientes sozinha?",
       answer:
-        "Conectamos via API oficial do WhatsApp Business. Você mantém seu número e a Alice passa a gerenciar as conversas automaticamente.",
+        "Sim. A IA da Jyze realiza todo o fluxo: conversa, tira pedidos, gera pagamentos, envia cardápios com imagens ou link e acompanha o status — tudo de forma automática e humanizada.",
     },
     {
-      question: "Preciso de conhecimento técnico para configurar?",
+      question: "E se o cliente precisar de ajuda humana?",
       answer:
-        "Não! Nossa equipe faz toda a configuração inicial. Você só precisa fornecer o cardápio e preferências do seu negócio.",
+        "Quando a IA identifica dúvidas mais complexas, ela chama automaticamente um atendente humano para assumir a conversa, garantindo qualidade em 100% das interações.",
     },
     {
-      question: "E se a IA não souber responder algo?",
+      question: "A IA funciona 24 horas por dia?",
       answer:
-        "A Alice é treinada especificamente para delivery. Casos raros são escalados para você via notificação e a IA aprende continuamente.",
+        "Sim. A assistente inteligente da Jyze trabalha 24h/7, garantindo atendimento constante e sem filas.",
     },
     {
-      question: "Posso cancelar quando quiser?",
-      answer: "Sim, sem multas ou taxas. Cobrança mensal sem fidelidade.",
+      question: "A IA calcula rotas de entrega?",
+      answer:
+        "Calcula sim. Ela gera a melhor rota com base no GPS e na localização do cliente, otimizando tempo e custos de entrega.",
+    },
+    {
+      question: "O sistema faz análise de desempenho?",
+      answer:
+        "A IA analisa dados das vendas, atendimento e operação, gerando insights automáticos para melhorar o desempenho do seu delivery.",
+    },
+    {
+      question: "Preciso instalar algum app adicional?",
+      answer:
+        "Não. A Jyze funciona totalmente integrada no seu ambiente atual, sem necessidade de múltiplas ferramentas.",
     },
   ];
 
@@ -1970,6 +1986,67 @@ const Index = () => {
                   </p>
                 </form>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Seção FAQ */}
+        <section id="faq" className="bg-slate-50 py-24">
+          <div className="mx-auto max-w-6xl px-4 md:px-6">
+            <div className="mb-16 space-y-4 text-center" data-animate>
+              <h2 className="text-3xl font-bold text-slate-900 md:text-4xl">
+                Perguntas Frequentes
+              </h2>
+              <p className="mx-auto max-w-2xl text-base text-slate-600">
+                Encontre respostas rápidas sobre como a Jyze pode transformar o atendimento do seu delivery.
+              </p>
+            </div>
+
+            <div className="mx-auto max-w-4xl space-y-4">
+              {faqs.map((faq, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg transition-all hover:border-brand-primary/40 hover:shadow-xl"
+                >
+                  <button
+                    onClick={() => setExpandedFAQ(expandedFAQ === index ? null : index)}
+                    className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-slate-50/50"
+                  >
+                    <h3 className="pr-8 text-lg font-semibold text-slate-900 md:text-xl">
+                      {faq.question}
+                    </h3>
+                    <motion.div
+                      animate={{ rotate: expandedFAQ === index ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex-shrink-0 rounded-full bg-gradient-to-br from-brand-primary/10 to-brand-aqua/10 p-2"
+                    >
+                      <ChevronDown className="h-5 w-5 text-brand-primary" strokeWidth={2.5} />
+                    </motion.div>
+                  </button>
+                  
+                  <AnimatePresence>
+                    {expandedFAQ === index && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="border-t border-slate-200 px-6 pb-6 pt-4">
+                          <p className="text-base leading-relaxed text-slate-600 md:text-lg">
+                            {faq.answer}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
