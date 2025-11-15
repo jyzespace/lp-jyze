@@ -1186,7 +1186,7 @@ const Index = () => {
               <div className="space-y-8" data-animate>
                 <div className="space-y-4">
                   <h2 className="text-3xl font-bold text-slate-900 md:text-4xl lg:text-5xl">
-                    Um agente que aprende com você.
+                    Um agente que aprende com você
                   </h2>
                   <p className="text-lg text-slate-600 md:text-xl">
                     Configuramos seu agente para falar como sua marca e entender a rotina do seu negócio — do primeiro "oi" até o fechamento do pedido.
