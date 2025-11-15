@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Parkinsans';
+  src: url('/fonts/Parkinsans-Regular.woff2') format('woff2'),
+       url('/fonts/Parkinsans-Regular.woff') format('woff'),
+       url('/fonts/Parkinsans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Parkinsans';
+  src: url('/fonts/Parkinsans-Bold.woff2') format('woff2'),
+       url('/fonts/Parkinsans-Bold.woff') format('woff'),
+       url('/fonts/Parkinsans-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+    font-family: "Parkinsans", system-ui, -apple-system, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+.transformation-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.transformation-card::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -150%;
+  width: 200%;
+  height: 220%;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 80%);
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.transformation-card--active::after {
+  animation: transformationSweep 6s ease-in-out infinite;
+  opacity: 1;
+}
+
+.transformation-card--inactive::after {
+  animation: none;
+}
+
+@keyframes transformationSweep {
+  0% {
+    transform: translateX(-120%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+[data-animate] {
+    opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+  }
+
+[data-animate].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-animate] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Ocultar scrollbar mas manter funcionalidade */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Smooth scroll para o carrossel */
+.hide-scrollbar {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Animação do carrossel - scroll da direita para esquerda */
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.business-carousel {
+  animation: scrollLeft 40s linear infinite;
+}
+
+/* Pausar animação no hover */
+.business-carousel:hover {
+  animation-play-state: paused;
+}
+
+/* Animação para notificação toast */
+@keyframes slideInRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.toast-notification {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.toast-notification-exit {
+  animation: slideOutRight 0.3s ease-in;
+}

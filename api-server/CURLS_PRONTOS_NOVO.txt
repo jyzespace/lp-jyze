@@ -1,0 +1,96 @@
+════════════════════════════════════════════════════════════════
+  📡 CURLS PRONTOS - NOVO SISTEMA COM SESSION ID
+════════════════════════════════════════════════════════════════
+
+🔥 ATENÇÃO: 
+1. Primeiro inicie a API: npm start
+2. Abra o site e envie uma mensagem
+3. Use os curls abaixo
+
+════════════════════════════════════════════════════════════════
+
+
+✅ PASSO 1 - VER QUEM ESTÁ ONLINE
+────────────────────────────────────────────────────────────────
+
+curl http://localhost:3001/api/list-users
+
+
+Isso vai mostrar algo como:
+{
+  "users": [
+    {
+      "sessionId": "user_1730566800123_abc123xyz",
+      "messageCount": 3,
+      "lastMessage": "Olá!"
+    }
+  ]
+}
+
+👉 COPIE O sessionId! Você vai usar ele nos próximos curls!
+
+
+════════════════════════════════════════════════════════════════
+
+
+✅ PASSO 2 - ENVIAR MENSAGEM PARA UM USUÁRIO
+────────────────────────────────────────────────────────────────
+
+⚠️ SUBSTITUA "COLOQUE_O_SESSION_ID_AQUI" pelo sessionId copiado acima!
+
+curl -X POST http://localhost:3001/api/send-message -H 'Content-Type: application/json' -d '{"targetId": "COLOQUE_O_SESSION_ID_AQUI", "message": "Olá! Como posso ajudar você? 🎉"}'
+
+
+════════════════════════════════════════════════════════════════
+
+
+✅ PASSO 3 - ENVIAR IMAGEM PARA UM USUÁRIO
+────────────────────────────────────────────────────────────────
+
+⚠️ SUBSTITUA "COLOQUE_O_SESSION_ID_AQUI" pelo sessionId copiado!
+⚠️ SUBSTITUA a URL da imagem pela sua!
+
+curl -X POST http://localhost:3001/api/send-image -H 'Content-Type: application/json' -d '{"targetId": "COLOQUE_O_SESSION_ID_AQUI", "imageUrl": "https://picsum.photos/400/300", "caption": "Confira nossa promoção! 🔥"}'
+
+
+════════════════════════════════════════════════════════════════
+
+
+💡 EXEMPLO COM sessionId REAL:
+────────────────────────────────────────────────────────────────
+
+Se o sessionId for: user_1730566800123_abc123xyz
+
+Mensagem:
+curl -X POST http://localhost:3001/api/send-message -H 'Content-Type: application/json' -d '{"targetId": "user_1730566800123_abc123xyz", "message": "Oi! Tudo bem?"}'
+
+Imagem:
+curl -X POST http://localhost:3001/api/send-image -H 'Content-Type: application/json' -d '{"targetId": "user_1730566800123_abc123xyz", "imageUrl": "https://exemplo.com/promo.jpg", "caption": "Veja!"}'
+
+
+════════════════════════════════════════════════════════════════
+
+
+🔍 OUTROS COMANDOS ÚTEIS:
+────────────────────────────────────────────────────────────────
+
+# Ver status da API
+curl http://localhost:3001/api/status
+
+# Limpar todas as mensagens
+curl -X DELETE http://localhost:3001/api/clear-messages
+
+
+════════════════════════════════════════════════════════════════
+  ✅ FLUXO RESUMIDO
+════════════════════════════════════════════════════════════════
+
+1. Usuário envia mensagem no site
+2. Você executa: curl http://localhost:3001/api/list-users
+3. Você copia o sessionId da resposta
+4. Você envia mensagem usando o sessionId como targetId
+5. Mensagem aparece no chat do usuário automaticamente!
+
+
+════════════════════════════════════════════════════════════════
+
