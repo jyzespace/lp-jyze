@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  web:
+    image: ${IMAGE:-jyze-frontend:latest}
+    networks:
+      - traefik
+    deploy:
+      replicas: ${REPLICAS:-1}
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        order: start-first
+        parallelism: 1
+        delay: 5s
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=${TRAEFIK_NETWORK:-saborpaulista}"
+        - "traefik.http.routers.${STACK_NAME:-jyze}.rule=Host(`${DOMAIN:-jyze.newaylab.com.br}`)"
+        - "traefik.http.routers.${STACK_NAME:-jyze}.entrypoints=${TRAEFIK_ENTRYPOINT_WEBSECURE:-websecure}"
+        - "traefik.http.routers.${STACK_NAME:-jyze}.tls.certresolver=${TRAEFIK_CERTRESOLVER:-letsencrypt}"
+        - "traefik.http.services.${STACK_NAME:-jyze}.loadbalancer.server.port=80"
+        - "traefik.http.routers.${STACK_NAME:-jyze}-http.rule=Host(`${DOMAIN:-jyze.newaylab.com.br}`)"
+        - "traefik.http.routers.${STACK_NAME:-jyze}-http.entrypoints=${TRAEFIK_ENTRYPOINT_WEB:-web}"
+        - "traefik.http.routers.${STACK_NAME:-jyze}-http.middlewares=${STACK_NAME:-jyze}-https-redirect"
+        - "traefik.http.middlewares.${STACK_NAME:-jyze}-https-redirect.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.${STACK_NAME:-jyze}-https-redirect.redirectscheme.permanent=true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/ >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  traefik:
+    external: true
+    name: ${TRAEFIK_NETWORK:-saborpaulista}

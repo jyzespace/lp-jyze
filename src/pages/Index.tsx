@@ -7,6 +7,8 @@ import FlowStep from "../components/FlowStep";
 import FlowDetailPanel from "../components/FlowDetailPanel";
 import ScreenshotCard from "../components/ScreenshotCard";
 import ImageModal from "../components/ImageModal";
+import fluxoVideo from "../../fluxo.mp4";
+import jyzeVideo from "../../video.mp4";
 import { 
   MessageSquare, 
   Printer, 
@@ -884,8 +886,8 @@ const Index = () => {
         return;
       }
 
-      // URL do webhook do n8n
-      const webhookUrl = 'https://n8n.locusup.shop/webhook/form-jyzenewaylab';
+      // URL direta do webhook do formulário
+      const webhookUrl = 'https://webhook.saborpaulista.site/webhook/formulario';
       
       // Preparar os dados do formulário
       const payload = {
@@ -902,28 +904,37 @@ const Index = () => {
 
       console.log("Enviando dados para webhook:", payload);
 
-      // Enviar para o webhook do n8n
-      const response = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify(payload),
+      // Enviar para o webhook com request simples (evita preflight CORS)
+      const formBody = new URLSearchParams();
+      Object.entries(payload).forEach(([key, value]) => {
+        formBody.append(key, value ?? "");
       });
 
-      console.log("Status da resposta:", response.status);
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        mode: 'no-cors', // evita bloqueio CORS no navegador
+        body: formBody,
+      });
+
+      const isOpaque = response.type === "opaque";
+      const isSuccessful = response.ok || isOpaque;
+
+      console.log("Status da resposta:", response.status, "opaque:", isOpaque);
 
       // Verificar se o envio foi bem-sucedido
       let responseText = "";
-      try {
-        responseText = await response.text();
-        console.log("Resposta do servidor:", responseText);
-      } catch (readError) {
-        console.error("Erro ao ler resposta:", readError);
+      if (!isOpaque) {
+        try {
+          responseText = await response.text();
+          console.log("Resposta do servidor:", responseText);
+        } catch (readError) {
+          console.error("Erro ao ler resposta:", readError);
+        }
+      } else {
+        console.log("Resposta opaca (no-cors); assumindo sucesso se não houve bloqueio de rede.");
       }
 
-      if (!response.ok) {
+      if (!isSuccessful) {
         throw new Error(`Erro ${response.status}: ${responseText || response.statusText}`);
       }
 
@@ -1118,14 +1129,35 @@ const Index = () => {
                     </div>
                   </dl>
                 </div>
-                {/* CHAT JYZELI DESABILITADO */}
-                {/* <div
-                  className="relative w-full max-w-md lg:max-w-lg"
+                <div
+                  className="flex-1 flex justify-center lg:justify-end"
                   data-animate
                   style={{ transitionDelay: "120ms" }}
                 >
-                  <WhatsAppChat />
-                </div> */}
+                  <div className="relative w-full max-w-[21rem] overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_25px_80px_-15px_rgba(0,0,0,0.55)] ring-1 ring-white/10">
+                    <div
+                      className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-brand-aqua/10 to-transparent opacity-80"
+                      aria-hidden="true"
+                    />
+                    <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-slate-950/70 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-white backdrop-blur">
+                      <span
+                        className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_5px_rgba(52,211,153,0.25)]"
+                        aria-hidden="true"
+                      />
+                      Fluxo real no WhatsApp
+                    </div>
+                    <video
+                      src={fluxoVideo}
+                      controls
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="relative block aspect-[9/16] w-full object-cover"
+                      aria-label="Demonstração do fluxo de atendimento via WhatsApp com IA"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1294,13 +1326,15 @@ const Index = () => {
             <div className="mb-16" data-animate>
               <div className="relative mx-auto max-w-4xl overflow-hidden rounded-2xl border border-slate-200 shadow-2xl">
                 <div className="relative aspect-video w-full">
-                  <iframe
-                    className="absolute inset-0 h-full w-full"
-                    src="https://www.youtube.com/embed/7v82ytEEG1w?si=OMPtqCKboiZLHnaX"
-                    title="YouTube video player"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
+                  <video
+                    src={jyzeVideo}
+                    controls
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="absolute inset-0 h-full w-full object-cover"
+                    aria-label="Demonstração do Jyze em funcionamento"
                   />
                 </div>
               </div>
