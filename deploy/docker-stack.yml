@@ -21,6 +21,7 @@ services:
         - "traefik.docker.network=${TRAEFIK_NETWORK:-saborpaulista}"
         - "traefik.http.routers.${STACK_NAME:-jyze}.rule=Host(`${DOMAIN:-jyze.newaylab.com.br}`)"
         - "traefik.http.routers.${STACK_NAME:-jyze}.entrypoints=${TRAEFIK_ENTRYPOINT_WEBSECURE:-websecure}"
+        - "traefik.http.routers.${STACK_NAME:-jyze}.tls=true"
         - "traefik.http.routers.${STACK_NAME:-jyze}.tls.certresolver=${TRAEFIK_CERTRESOLVER:-letsencryptresolver}"
         - "traefik.http.services.${STACK_NAME:-jyze}.loadbalancer.server.port=80"
         - "traefik.http.routers.${STACK_NAME:-jyze}-http.rule=Host(`${DOMAIN:-jyze.newaylab.com.br}`)"
