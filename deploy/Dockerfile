@@ -10,6 +10,7 @@ RUN npm run build
 
 # Serve static files with Nginx
 FROM nginx:1.27-alpine
+RUN apk add --no-cache curl
 COPY deploy/nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 
